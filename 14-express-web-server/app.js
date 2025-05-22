@@ -53,9 +53,15 @@
 // });
 //================PROGRAM SEBELUM EXPRESSJS==========================
 
-const express = require('express')
+const express = require('express');
+const { title } = require('process');
+const expressLayouts = require('express-ejs-layouts');
 const app = express()
 const port = 3000
+
+//gunakan EJS
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
 
 app.get('/', (req, res) => {
 //   res.send('Hello World!')
@@ -64,18 +70,51 @@ app.get('/', (req, res) => {
     //     email: 'yoka@gmail.com',
     //     noHP: '08123456789',
     // });
-    res.sendFile('./index.html',{root: __dirname});
+    // res.sendFile('./index.html',{root: __dirname});
     //{root: __dirname} artinya berada di direktori yang sama
+    
+    const mahasiswa = [
+        {
+            nama: 'Yoka Angga',
+            email: 'yoka@gmail.com'
+        },
+        {
+            nama: 'Dian',
+            email: 'diaan@gmail.com'
+        },
+        {
+            nama: 'Reyna',
+            email: 'reyna@gmail.com'
+        }
+    ];
+
+    //MENGGUNAKAN TEMPLATING ENGINE EJS
+    res.render('index', {
+        nama: 'Yoka Angga Prawira', 
+        title: 'Halaman Home',
+        layout: 'layouts/main-layout',
+        mahasiswa,
+    });
 })
 
 app.get('/about', (req, res) => {
 //   res.send('Ini adalah halaman about yang akan keren!')
-    res.sendFile('./about.html',{root: __dirname});
+    // res.sendFile('./about.html',{root: __dirname});
+    //MENGGUNAKAN TEMPLATING ENGINE EJS
+    res.render('about', {
+        title: 'Halaman About',
+        layout: 'layouts/main-layout',
+    });
 })
 
 app.get('/contact', (req, res) => {
 //   res.send('Ini adalah halaman contact yang akan keren!')
-    res.sendFile('./contact.html',{root: __dirname});
+    // res.sendFile('./contact.html',{root: __dirname});
+    //MENGGUNAKAN TEMPLATING ENGINE EJS
+    res.render('contact', {
+        title: 'Halaman Contact',
+        layout: 'layouts/main-layout',
+    });
 })
 
 app.get('/product/:id/', (req, res) => {
