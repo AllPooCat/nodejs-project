@@ -123,7 +123,7 @@ const deleteContact = (nama) => {
 
     fs.writeFileSync(dataPath, JSON.stringify(newContacts));
     console.log(
-        chalk.red.inverse.bold(
+        chalk.green.inverse.bold(
             `Kontak dengan nama ${nama} telah dihapus!!!`
         )
     );
