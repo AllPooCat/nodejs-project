@@ -87,9 +87,10 @@ const listContact = () => {
 
 const detailContact = (nama) => {
     const contacts = loadContact();
-    const cekContact = contacts.find((contact) => contact.nama === nama);
+
+    const contact = contacts.find((contact) => contact.nama === nama);
     // console.log(cekContact);
-    if (!cekContact) {
+    if (!contact) {
         console.log(
             chalk.red.inverse.bold(
                 `Kontak dengan nama ${nama} tidak terdaftar, gunakan nama lain!!!`
@@ -97,7 +98,37 @@ const detailContact = (nama) => {
         );
         return false;
     };
+
+    console.log(chalk.blue.inverse.bold(contact.nama));
+    if (contact.email) {
+        console.log(contact.email);
+    }
+    console.log(contact.noHP);
 };
 
+const deleteContact = (nama) => {
+    const contacts = loadContact();
+    const newContacts = contacts.filter(
+        (contact) => contact.nama.toLowerCase() !== nama.toLowerCase()
+    );
+
+    if (contacts.length === newContacts.length) {
+        console.log(
+            chalk.red.inverse.bold(
+                `Kontak dengan nama ${nama} tidak terdaftar, gunakan nama lain!!!`
+            )    
+        );
+        return false;
+    };
+
+    fs.writeFileSync(dataPath, JSON.stringify(newContacts));
+    console.log(
+        chalk.red.inverse.bold(
+            `Kontak dengan nama ${nama} telah dihapus!!!`
+        )
+    );
+
+}
+
 // module.exports = {tulisPertanyaan, simpanContact};
-module.exports = {simpanContact, listContact, detailContact};
+module.exports = {simpanContact, listContact, detailContact, deleteContact};
