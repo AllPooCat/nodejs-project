@@ -78,8 +78,8 @@ app.get('/contact', (req, res) => {
     res.sendFile('./contact.html',{root: __dirname});
 })
 
-app.get('/product/:id', (req, res) => {
-    res.send('Product ID : '+ req.params.id);
+app.get('/product/:id/', (req, res) => {
+    res.send(`Product ID :  ${req.params.id} <br> Category : ${req.query.category}`);
 })
 
 app.use('/', (req, res) => {
