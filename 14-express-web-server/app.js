@@ -55,13 +55,26 @@
 
 const express = require('express');
 const { title } = require('process');
+const morgan = require('morgan');
 const expressLayouts = require('express-ejs-layouts');
 const app = express()
 const port = 3000
 
 //gunakan EJS
 app.set('view engine', 'ejs');
+
+//third party middleware
 app.use(expressLayouts);
+app.use(morgan('dev'));
+
+//agar file/folder statis dapat diakses public
+app.use(express.static('public'));
+
+//application level middlewere
+app.use((req, res, next) => {
+    console.log('time :>> ', Date.now());
+    next();
+});
 
 app.get('/', (req, res) => {
 //   res.send('Hello World!')
@@ -121,7 +134,7 @@ app.get('/product/:id/', (req, res) => {
     res.send(`Product ID :  ${req.params.id} <br> Category : ${req.query.category}`);
 })
 
-app.use('/', (req, res) => {
+app.use((req, res) => {
     res.status(404);
     res.send('<h1>404</h1>');
 
