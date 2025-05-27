@@ -1,7 +1,13 @@
 const express = require('express');
 const { title } = require('process');
-const {loadContact, findContact} = require('./utils/contacts');
+const {loadContact, findContact, addContact, cekDuplikat} = require('./utils/contacts');
 const expressLayouts = require('express-ejs-layouts');
+const { query, validationResult, body, check } = require('express-validator');
+
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
+
 const app = express()
 const port = 3000
 
@@ -13,6 +19,21 @@ app.use(expressLayouts);
 
 //agar file/folder statis dapat diakses public
 app.use(express.static('public'));
+
+app.use(express.urlencoded({ extended: true }));
+
+//konfigurasi flash
+app.use(cookieParser('secret'));
+app.use(
+    session({
+        cookie: { maxAge: 6000 },
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+    })
+);
+
+app.use(flash());
 
 app.get('/', (req, res) => {    
     const mahasiswa = [
@@ -56,9 +77,49 @@ app.get('/contact', (req, res) => {
         title: 'Halaman Contact',
         layout: 'layouts/main-layout',
         contacts,
+        msg: req.flash('msg'),
     });
 });
 
+//halaman tambah contact
+app.get('/contact/add', (req, res) => {
+    res.render('add-contact', {
+        title: 'Form Tambah Contact',
+        layout: 'layouts/main-layout',
+    });
+});
+
+//proses data contact
+app.post('/contact', [
+    body('nama').custom((value) => {
+        const duplikat = cekDuplikat(value);
+        if (duplikat) {
+           throw new Error('Nama contact sudah digunakan!!!');
+        }
+        return true;
+    }),
+    check('email', 'Email tidak valid!!!').isEmail(),
+    check('nohp', 'No Handphone tidak valid!!!').isMobilePhone('id-ID')
+], (req, res) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        // return res.status(400).json({errors: errors.array()});
+        res.render('add-contact', {
+            title: 'Form Tambah Contact',
+            layout: 'layouts/main-layout',
+            errors: errors.array(),
+        });
+    } else {
+        addContact(req.body);
+        //kirimkan flash massage
+        req.flash('msg', 'Data contact berhasil ditambahkan!!!');
+        res.redirect('/contact');
+    };
+    
+});
+
+//halaman detail contact
 app.get('/contact/:nama', (req, res) => {
 //mengambil data contact
     const contact = findContact(req.params.nama);
