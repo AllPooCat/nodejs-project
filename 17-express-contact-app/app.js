@@ -1,61 +1,6 @@
-//================PROGRAM SEBELUM EXPRESSJS==========================
-// const http = require('http');
-// const fs = require('fs');
-// const port = 3000;
-
-// const renderHTML = (path, res) => {
-//     fs.readFile(path, (err, data) => {
-//         if (err) {
-//             res.write(404);
-//             res.write('Error file not found');
-//         } else {
-//             res.write(data);
-//         };
-//         res.end();
-//     });
-// };
-
-
-// //membuat server
-// http.createServer((req, res) => {
-//     //agar menampilkan konten html
-//     res.writeHead(200, {
-//         'content-type' : 'text/html',
-//     });
-
-//     const url = req.url;
-
-//     //routing
-//     switch (url) {
-//         case '/about':
-//             renderHTML('./about.html',res);
-//             break;
-//         case '/contact':
-//             renderHTML('./contact.html',res);
-//             break;
-//         default:
-//             renderHTML('./index.html',res);
-//             break;
-//     };
-
-//     // if (url === '/about') {
-//     //     renderHTML('./about.html', res);
-//     // } else if (url === '/contact') {
-//     //     renderHTML('./contact.html', res);
-//     // } else {
-//     //     renderHTML('./index.html', res);
-//     // };
-
-    
-// })
-// .listen(port, () =>{
-//     console.log(`Server is listening on port ${port}..`);
-// });
-//================PROGRAM SEBELUM EXPRESSJS==========================
-
 const express = require('express');
 const { title } = require('process');
-const morgan = require('morgan');
+const {loadContact, findContact} = require('./utils/contacts');
 const expressLayouts = require('express-ejs-layouts');
 const app = express()
 const port = 3000
@@ -65,27 +10,11 @@ app.set('view engine', 'ejs');
 
 //third party middleware
 app.use(expressLayouts);
-app.use(morgan('dev'));
 
 //agar file/folder statis dapat diakses public
 app.use(express.static('public'));
 
-//application level middlewere
-app.use((req, res, next) => {
-    console.log('time :>> ', Date.now());
-    next();
-});
-
-app.get('/', (req, res) => {
-//   res.send('Hello World!')
-    // res.json({
-    //     nama: 'Yoka',
-    //     email: 'yoka@gmail.com',
-    //     noHP: '08123456789',
-    // });
-    // res.sendFile('./index.html',{root: __dirname});
-    //{root: __dirname} artinya berada di direktori yang sama
-    
+app.get('/', (req, res) => {    
     const mahasiswa = [
         {
             nama: 'Yoka Angga',
@@ -121,18 +50,24 @@ app.get('/about', (req, res) => {
 })
 
 app.get('/contact', (req, res) => {
-//   res.send('Ini adalah halaman contact yang akan keren!')
-    // res.sendFile('./contact.html',{root: __dirname});
-    //MENGGUNAKAN TEMPLATING ENGINE EJS
+//mengambil data contact
+    const contacts = loadContact();
     res.render('contact', {
         title: 'Halaman Contact',
         layout: 'layouts/main-layout',
+        contacts,
     });
-})
+});
 
-app.get('/product/:id/', (req, res) => {
-    res.send(`Product ID :  ${req.params.id} <br> Category : ${req.query.category}`);
-})
+app.get('/contact/:nama', (req, res) => {
+//mengambil data contact
+    const contact = findContact(req.params.nama);
+    res.render('detail', {
+        title: 'Detail Contact',
+        layout: 'layouts/main-layout',
+        contact,
+    });
+});
 
 app.use((req, res) => {
     res.status(404);

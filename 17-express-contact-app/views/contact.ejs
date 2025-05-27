@@ -1,2 +1,41 @@
-
-    <h1>Ini adalah halaman CONTACT yang belum keren!</h1>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Daftar Contact</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">No Handphone</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <% if (contacts.length === 0) { %>
+                        <tr>
+                            <td colspan="4">
+                                <div class="alert alert-danger" role="alert">
+                                    Data contacts masih kosong!!!
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                    <% let no = 1; %>
+                    <% contacts.forEach((contact, i) => { i++ %>
+                        <tr>
+                        <th scope="row"><%= i++ %></th>
+                        <td><%= contact.nama %></td>
+                        <td><%= contact.nohp %></td>
+                        <td>
+                            <a href="./contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill">ⓘdetail</a>
+                        </td>
+                        </tr>
+                    <% }) %>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
