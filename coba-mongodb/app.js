@@ -64,11 +64,30 @@ client.connect((error, client) => {
     // }));
 
     //menampilkan berdasarkan id
-    console.log(
-        db.collection('mahasiswa')
-        .find({_id: ObjectId('6838717fc953db5a3ce6f831')})
-        .toArray((error, result) => {
-        console.log(result);
-    }));
+    // console.log(
+    //     db.collection('mahasiswa')
+    //     .find({_id: ObjectId('6838717fc953db5a3ce6f831')})
+    //     .toArray((error, result) => {
+    //     console.log(result);
+    // }));
+
+    //mengubah data
+    // db.collection('mahasiswa').updateOne(
+    //     {
+    //         _id: ObjectId('6838717fc953db5a3ce6f831')
+    //     },
+    //     {
+    //         $set: {
+    //             nama: 'Yoka Angga Prawira'
+    //         },
+    //     }
+    // );
+
+    //menghapus satu data
+    db.collection('mahasiswa').deleteOne(
+        {
+            _id: ObjectId('6838717fc953db5a3ce6f831')
+        }
+    );
 
 });
