@@ -58,7 +58,7 @@ app.get('/', (req, res) => {
         layout: 'layouts/main-layout',
         mahasiswa,
     });
-})
+});
 
 app.get('/about', (req, res) => {
 //   res.send('Ini adalah halaman about yang akan keren!')
